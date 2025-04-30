@@ -61,3 +61,17 @@ pip install --upgrade flake8
 pip install --upgrade black
 pip install --upgrade GPUtil
 pip install --upgrade wandb
+pip install --upgrade graphviz
+pip install --upgrade pygraphviz
+pip install --upgrade fastapi 
+pip install --upgrade uvicorn 
+pip install --upgrade celery 
+pip install --upgrade redis 
+pip install --upgrade pydantic 
+pip install --upgrade sqlalchemy 
+# pip install --upgrade psycopg2
+pip install --upgrade psycopg2-binary
+pip install --upgrade pyverilog
+pip install --upgrade streamlit
+pip install --upgrade llama-cpp-python
+pip install --upgrade huggingface-hub
