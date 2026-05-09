@@ -1,0 +1,67 @@
+playbook_version: 1.0.0
+phase_id: 0
+tasks:
+  p0-pin-fetchcontent:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p0-fix-linux-paths:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p0-ctest-generator-agnostic:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p1-add-clang-format:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p1-add-clang-tidy:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p1-remove-if0-blocks:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p1-add-sanitizer-ci:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p2-set-cxx23:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p2-revisit-toolchain-floors:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p3-add-install-exports:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p4-algo-real-tests:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p4-swig-parity:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p5-bench-baselines:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p6-allocator-categories:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p7-abi-check-ci:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p8-debt-slo:
+    status: notStarted
+    last_verification: null
+    last_error: null
