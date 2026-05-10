@@ -12,10 +12,16 @@ Use this skill when modifying or reviewing
 or planning new CI gates.
 
 ## Inputs
+- [`doc/mission.md`](../../../doc/mission.md) (the charter; CI
+  guards the public-utility quality bar).
 - [`/home/rohit/src/eda_stl/CMakeLists.txt`](../../../CMakeLists.txt)
 - [`/home/rohit/src/eda_stl/.github/workflows/cmake-single-platform.yml`](../../../.github/workflows/cmake-single-platform.yml)
 - [`doc/build-test-ci.md`](../../../doc/build-test-ci.md)
 - [`doc/code-quality-standards.md`](../../../doc/code-quality-standards.md)
+- [`doc/library-catalog.md`](../../../doc/library-catalog.md)
+  (`library-catalog-drift` and `license-audit` gates).
+- [`doc/binding-architecture.md`](../../../doc/binding-architecture.md)
+  (`cabi-lint`, `llm-card-lint`, binding-zero-copy gates).
 
 ## Output
 A CI plan including:
@@ -25,13 +31,20 @@ A CI plan including:
 4. Failure surfacing rules.
 
 ## Required Gates Across Phases
-- Phase 0: build + ctest.
-- Phase 1: clang-format dry-run, clang-tidy, cppcheck, ASan, UBSan.
+- Phase 0: build + ctest; vcpkg manifest mode wiring.
+- Phase 1: clang-format dry-run, clang-tidy, cppcheck, ASan, UBSan,
+  `library-catalog-drift`, `license-audit`.
 - Phase 2: full C++23 matrix.
-- Phase 4: coverage threshold, sanitizers across all suites.
-- Phase 5: throughput regression gate.
-- Phase 6: memory ceiling regression gate.
-- Phase 7: ABI compatibility gate.
+- Phase 3: `cabi-lint` (no template signatures or `binding-impl`
+  types crossing the C-ABI).
+- Phase 4: coverage threshold, sanitizers across all suites,
+  `llm-card-lint`, binding parity tests.
+- Phase 5: throughput regression gate, `binding-zero-copy` gate,
+  `binding-bench` (binding/service/tile/MCP KPIs).
+- Phase 6: memory ceiling regression gate, tile protocol gates.
+- Phase 7: ABI compatibility gate (`p7-abi-check-ci` and
+  `p7-cabi-abi-gate`), allowlist governance, mission-alignment soft
+  gate, OTel/prom telemetry.
 - Phase 8: technical-debt SLO gate.
 
 ## Failure Surfacing
@@ -47,7 +60,11 @@ A CI plan including:
 5. Cross-link to debt items D-02, D-15, D-16, D-17, D-18.
 
 ## Acceptance Criteria
+- Mission cross-reference is present (`doc/mission.md`).
 - Path drift fix included.
-- New gates mapped to phases.
+- New gates mapped to phases, including binding/library/mission gates
+  (`cabi-lint`, `llm-card-lint`, `binding-zero-copy`,
+  `binding-bench`, `library-catalog-drift`, `license-audit`,
+  `mission-alignment-review`).
 - Output includes a mermaid diagram of the resulting workflow topology.
 - All edits cite YAML keys explicitly.

@@ -1,6 +1,10 @@
 playbook_version: 1.0.0
 phase_id: 0
 tasks:
+  p0-mission-charter:
+    status: notStarted
+    last_verification: null
+    last_error: null
   p0-pin-fetchcontent:
     status: notStarted
     last_verification: null
@@ -10,6 +14,14 @@ tasks:
     last_verification: null
     last_error: null
   p0-ctest-generator-agnostic:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p0-jsoncpp-to-simdjson-glaze:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p0-introduce-vcpkg-manifest:
     status: notStarted
     last_verification: null
     last_error: null
@@ -29,6 +41,18 @@ tasks:
     status: notStarted
     last_verification: null
     last_error: null
+  p1-adopt-spdlog-fmt-cli11:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p1-library-catalog-drift-gate:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p1-license-audit:
+    status: notStarted
+    last_verification: null
+    last_error: null
   p2-set-cxx23:
     status: notStarted
     last_verification: null
@@ -37,7 +61,35 @@ tasks:
     status: notStarted
     last_verification: null
     last_error: null
+  p2-promote-fmt-to-stdformat:
+    status: notStarted
+    last_verification: null
+    last_error: null
   p3-add-install-exports:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p3-cabi-define:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p3-cabi-lint:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p3-binding-export-targets:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p3-schema-skeletons:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p3-system-card-generator:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p3-agents-md-skeleton:
     status: notStarted
     last_verification: null
     last_error: null
@@ -49,7 +101,51 @@ tasks:
     status: notStarted
     last_verification: null
     last_error: null
+  p4-mcp-server-native:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p4-allowlist-policy:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p4-llm-card-lint:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p4-nanobind-python:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p4-cpptcl-tcl:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p4-binding-parity:
+    status: notStarted
+    last_verification: null
+    last_error: null
   p5-bench-baselines:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p5-onetbb-jthread:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p5-tracy-hooks:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p5-flight-service:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p5-plasma-coloc:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p5-mcp-flight-transport:
     status: notStarted
     last_verification: null
     last_error: null
@@ -57,7 +153,67 @@ tasks:
     status: notStarted
     last_verification: null
     last_error: null
+  p6-abseil-flat-hash:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p6-mio-mmap:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p6-zstd-lz4-codecs:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p6-tile-index:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p6-tile-protocol:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p6-llm-tile-tools:
+    status: notStarted
+    last_verification: null
+    last_error: null
   p7-abi-check-ci:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p7-cabi-abi-gate:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p7-swig-decommission:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p7-agents-md-publish:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p7-allowlist-governance:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p7-llm-compat-matrix:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p7-otel-prom:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p7-libfuzzer:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p7-webgpu-viewer:
+    status: notStarted
+    last_verification: null
+    last_error: null
+  p7-mission-governance-gate:
     status: notStarted
     last_verification: null
     last_error: null

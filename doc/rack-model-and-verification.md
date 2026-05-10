@@ -22,10 +22,15 @@ phases.
   [`performance/cpp23-and-parallel-runtime.md`](performance/cpp23-and-parallel-runtime.md)).
 
 ## Cross References
+- [`mission.md`](mission.md) (the rack model is the concrete
+  realization of the "STL for EDA" charter; the verification chain
+  enforces the charter's required capabilities).
 - [`glossary.md`](glossary.md)
 - [`repository-map.md`](repository-map.md)
 - [`build-test-ci.md`](build-test-ci.md)
 - [`extensibility-contract.md`](extensibility-contract.md)
+- [`binding-architecture.md`](binding-architecture.md)
+- [`library-catalog.md`](library-catalog.md)
 - [`implementation/implementation-phases.md`](implementation/implementation-phases.md)
 
 ## Data Structure Overview

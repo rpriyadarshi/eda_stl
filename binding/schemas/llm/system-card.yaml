@@ -1,0 +1,190 @@
+# eda_stl LLM System Card
+#
+# This file is the machine-readable identity, capability index, and
+# safety policy returned by mcp_server on the MCP `initialize`
+# handshake. It is the canonical static description of what eda_stl
+# offers to LLM agents.
+#
+# Authoritative human document: doc/binding-architecture.md (section 7).
+# Mission charter:               doc/mission.md.
+# Repo discovery entry point:    AGENTS.md.
+#
+# This file is a SKELETON authored in Phase 3 (task
+# `p3-system-card-generator`). The full payload, including a generator
+# pipeline that derives the capability registry from the C-ABI plus
+# schemas, lands in Phase 4 alongside the native C++ mcp_server.
+
+schema_version: 0.1.0
+spec: mcp/system-card/0.1.0
+
+identity:
+  name: eda_stl
+  version: 0.0.0-dev          # bumped at each tagged release
+  license: MIT
+  homepage: https://github.com/<owner>/eda_stl
+  description: >
+    eda_stl is a public-utility C++23 data-modeling library for
+    Electronic Design Automation. It exposes a stable C-ABI, neutral
+    schemas (Apache Arrow Flight, Arrow record-batch, vector tile),
+    and a native LLM interface via the Model Context Protocol (MCP).
+  mission_tag: stl-for-eda
+  mission_doc: doc/mission.md
+  agents_md: AGENTS.md
+  audience:
+    - llm_agents
+    - eda_tool_authors
+    - flow_automation_teams
+    - academic_researchers
+  domains:
+    - eda
+    - hierarchical-netlist
+    - layout
+    - timing-data-model
+    - hdl
+
+protocol:
+  spec: mcp/0.1
+  transports:
+    - id: stdio
+      default: true
+    - id: http_sse
+      default: false
+      base_path: /mcp
+  encoding:
+    request: application/json    # JSON-RPC 2.0
+    response: application/json
+  ingest_library: simdjson
+  serde_library: glaze
+  schema_validation_library: valijson
+
+server:
+  binary: binding/llm/mcp_server
+  language: c++23
+  build_flag: EDA_BUILD_MCP=ON
+  dependencies:
+    - simdjson
+    - glaze
+    - valijson
+    - drogon          # only when http_sse transport is enabled
+    - rapidyaml
+
+capabilities:
+  registry: binding/schemas/llm/capability-registry.yaml
+  derived_from:
+    - binding/cabi/include/eda_c_*.h
+    - binding/schemas/flight/*.proto
+    - binding/schemas/arrow/*.fbs
+    - binding/schemas/tile/*.fbs
+    - binding/schemas/llm/annotations.yaml
+  drift_check: p4-llm-card-lint
+  taxonomy:
+    resources:
+      - id: eda://docs/mission
+        purpose: Read the mission charter.
+        source_class: canonical
+      - id: eda://docs/binding-architecture
+        purpose: Read the binding architecture document.
+        source_class: canonical
+      - id: eda://glossary
+        purpose: Read the canonical glossary.
+        source_class: canonical
+      - id: eda://schemas/flight
+        purpose: Read the Flight RPC schema bundle.
+        source_class: canonical
+      - id: eda://design/<id>/summary
+        purpose: Generated, read-only summary of a design.
+        source_class: canonical
+    tools:
+      - id: rack.find_design
+        purpose: Find a design by name.
+        side_effects: none
+        cost_class: o1
+      - id: rack.find_net
+        purpose: Find a net by hierarchical name.
+        side_effects: none
+        cost_class: o1
+      - id: algo.dfs
+        purpose: Run a depth-first traversal.
+        side_effects: none
+        cost_class: olog_n
+      - id: layout.stream_tile
+        purpose: Stream a layout tile at a requested LOD.
+        side_effects: bandwidth
+        cost_class: streaming
+      - id: report.generate_summary
+        purpose: Generate a textual summary of a design.
+        side_effects: cpu
+        cost_class: olog_n
+    prompts:
+      - id: explain_design
+        purpose: Explain a design in plain language.
+      - id: diagnose_open_net
+        purpose: Diagnose a suspected open net.
+      - id: produce_layout_summary
+        purpose: Produce a layout summary report.
+
+safety:
+  allowlist: binding/schemas/llm/allowlist.yaml
+  enforcement: deny_by_default
+  audit:
+    enabled: true
+    sink: file                # file | syslog | external
+    fields:
+      - timestamp
+      - identity
+      - environment
+      - request
+      - decision
+      - outcome
+      - latency_ms
+  provenance:
+    enabled: true
+    block:
+      - source_schema_version
+      - generation_time
+      - signing_hash          # optional, populated when build supplies it
+  content_type:
+    enabled: true
+    default: application/eda+arrow
+    map:
+      docs: text/markdown
+      summaries: text/plain
+      tiles: application/eda-tile+flatbuffer
+      schemas: application/yaml
+  ip_boundary:
+    description: >
+      Outbound destinations to which mcp_server may emit design data.
+      Anything outside is exfiltration and is rejected at the response
+      edge.
+    allowed_destinations:
+      - localhost
+      - co_located_arrow_flight
+    forbidden_destinations:
+      - public_internet_unless_allowlisted
+  prompt_injection_mitigations:
+    - fence_untrusted_text
+    - mark_source_class_on_resources
+    - never_embed_user_input_in_tool_descriptions
+    - prefer_structured_outputs_over_freeform
+  schema_validation:
+    enabled: true
+    library: valijson
+    request: required
+    response: required
+
+telemetry:
+  metrics:
+    enabled: true
+    library: prometheus-cpp
+    endpoint: /metrics
+  tracing:
+    enabled: false             # promoted in Phase 7 (p7-otel-prom)
+    library: opentelemetry-cpp
+  in_process_profiler:
+    enabled: false
+    library: tracy
+    build_flag: EDA_ENABLE_TRACY=ON
+
+phases:
+  current: 0
+  see: doc/implementation/implementation-phases.md

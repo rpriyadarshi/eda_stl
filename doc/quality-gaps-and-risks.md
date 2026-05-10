@@ -22,11 +22,14 @@ tools driving phase execution.
   [`technical-debt-register.md`](technical-debt-register.md)).
 
 ## Cross References
+- [`mission.md`](mission.md)
 - [`glossary.md`](glossary.md)
 - [`build-test-ci.md`](build-test-ci.md)
 - [`code-quality-standards.md`](code-quality-standards.md)
 - [`technical-debt-register.md`](technical-debt-register.md)
 - [`extensibility-contract.md`](extensibility-contract.md)
+- [`binding-architecture.md`](binding-architecture.md)
+- [`library-catalog.md`](library-catalog.md)
 - [`implementation/implementation-phases.md`](implementation/implementation-phases.md)
 
 ## Severity Scale
@@ -79,6 +82,15 @@ flowchart LR
 | R-16 | No ABI versioning policy or stable headers | high | certain | repository-wide | Phase 3 |
 | R-17 | No throughput/memory regression baselines | high | certain | repository-wide | Phase 5 |
 | R-18 | No deprecation/removal policy for public symbols | medium | certain | repository-wide | Phase 7 |
+| R-19 | SWIG fragility (commented `%include`s, parity gaps, brittle generation) | high | certain | [`/home/rohit/src/eda_stl/rack/swig/rack_int.i`](../rack/swig/rack_int.i) | Phase 4 / 7 |
+| R-20 | JsonCpp obsolescence (slow, non-Arrow-friendly, narrow API) | high | certain | [`/home/rohit/src/eda_stl/CMakeLists.txt`](../CMakeLists.txt), [`/home/rohit/src/eda_stl/rack/swig/rack_int.i`](../rack/swig/rack_int.i) | Phase 0 |
+| R-21 | No C-stable ABI (no SSOT for cross-language interfacing) | critical | certain | repository-wide; absence of `binding/cabi/` | Phase 3 |
+| R-22 | No service plane (no Arrow Flight or shared-memory data path) | high | certain | repository-wide; absence of `binding/server/` | Phase 5 |
+| R-23 | No tile / web / MCP deliverables (chip-class scale unreachable; no LLM interface) | high | certain | repository-wide; absence of `binding/web/` and `binding/llm/` | Phase 4 / 6 |
+| R-24 | LLM prompt-injection through untrusted design data | high | possible | [`binding-architecture.md`](binding-architecture.md) §7.4 | Phase 4 / 7 |
+| R-25 | IP-boundary leakage (LLM exfiltrates design data outside declared destinations) | critical | possible | [`binding-architecture.md`](binding-architecture.md) §7.4 | Phase 4 / 7 |
+| R-26 | Allowlist misconfiguration (overly broad allowlist; missing audit-tag) | high | likely | [`binding-architecture.md`](binding-architecture.md) §7.4 | Phase 4 / 7 |
+| R-27 | Mission deviation (a change erodes the public-utility premise) | critical | possible | [`mission.md`](mission.md) §"Mission-Aligned Reject Criteria" | Phase 0+ (advisory), Phase 7 (gate) |
 
 ## Acceptance Criteria For This Document
 - Severity and likelihood scales explicitly defined.

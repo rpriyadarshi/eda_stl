@@ -10,6 +10,8 @@ disable-model-invocation: true
 Use this skill when assessing or extending tests in `eda_stl`.
 
 ## Inputs
+- [`doc/mission.md`](../../../doc/mission.md) (every test exists to
+  protect the mission's required capabilities).
 - [`/home/rohit/src/eda_stl/rack/test/test.cpp`](../../../rack/test/test.cpp)
 - [`/home/rohit/src/eda_stl/rack/swig/test.py`](../../../rack/swig/test.py)
 - [`/home/rohit/src/eda_stl/algo/test/test.cpp`](../../../algo/test/test.cpp)
@@ -17,6 +19,9 @@ Use this skill when assessing or extending tests in `eda_stl`.
 - [`/home/rohit/src/eda_stl/CMakeLists.txt`](../../../CMakeLists.txt)
 - [`doc/rack-model-and-verification.md`](../../../doc/rack-model-and-verification.md)
 - [`doc/build-test-ci.md`](../../../doc/build-test-ci.md)
+- [`doc/binding-architecture.md`](../../../doc/binding-architecture.md)
+  (binding parity tests under `binding/{python,tcl,llm}/test/` from
+  Phase 4 onward).
 
 ## Output
 A test-quality report containing:
@@ -47,6 +52,9 @@ A test-quality report containing:
 - Mock or fake artifacts; tests run real builds and real bindings.
 
 ## Acceptance Criteria
+- Mission cross-reference is present (`doc/mission.md`).
 - Every gap has a file-path citation.
 - Each recommendation is mapped to a phase and to a debt item.
+- Binding parity tests (Phase 4 `p4-binding-parity`) are evaluated
+  when present.
 - No fabricated coverage numbers.

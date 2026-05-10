@@ -11,10 +11,14 @@ Use this skill when the request concerns moving the project from C++17 to a
 C++23 baseline, or when proposing C++23 idioms to apply to existing code.
 
 ## Inputs
+- [`doc/mission.md`](../../../doc/mission.md) (the charter; the C++23
+  migration is in service of the mission's required capabilities).
 - [`/home/rohit/src/eda_stl/CMakeLists.txt`](../../../CMakeLists.txt)
 - [`doc/build-test-ci.md`](../../../doc/build-test-ci.md)
 - [`doc/code-quality-standards.md`](../../../doc/code-quality-standards.md)
 - [`doc/performance/cpp23-and-parallel-runtime.md`](../../../doc/performance/cpp23-and-parallel-runtime.md)
+- [`doc/library-catalog.md`](../../../doc/library-catalog.md) (e.g.,
+  fmt -> std::format promotion in `p2-promote-fmt-to-stdformat`).
 
 ## Output
 A structured migration plan that includes:
@@ -50,7 +54,9 @@ A structured migration plan that includes:
 | MSVC | recent | secondary | feature gaps tracked |
 
 ## Acceptance Criteria
-- Plan output cites file paths.
+- Plan output anchors on [`doc/mission.md`](../../../doc/mission.md)
+  and cites file paths.
 - Feature adoption order justified by readability or correctness gains.
 - Compiler matrix and timeline are explicit.
-- Cross-references to debt items and phases included.
+- Cross-references to debt items, library catalog (e.g.,
+  `p2-promote-fmt-to-stdformat`), and phases included.

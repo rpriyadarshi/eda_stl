@@ -11,9 +11,17 @@ Use this skill whenever a deficiency is identified that cannot or should not
 be fixed in the same change.
 
 ## Inputs
+- [`doc/mission.md`](../../../doc/mission.md) (every debt item is
+  weighed against the mission's required capabilities and reject
+  criteria).
 - [`doc/technical-debt-register.md`](../../../doc/technical-debt-register.md)
 - [`doc/quality-gaps-and-risks.md`](../../../doc/quality-gaps-and-risks.md)
 - [`doc/implementation/implementation-phases.md`](../../../doc/implementation/implementation-phases.md)
+- [`doc/library-catalog.md`](../../../doc/library-catalog.md)
+  (library-substitution items, e.g. JsonCpp -> simdjson + glaze).
+- [`doc/binding-architecture.md`](../../../doc/binding-architecture.md)
+  (binding/LLM debt items, e.g. SWIG decommissioning, missing
+  C-ABI).
 
 ## Output
 - An update or addition to
@@ -38,7 +46,11 @@ be fixed in the same change.
 5. Verify the lifecycle state (`Logged`, `Triaged`, `Scheduled`, etc.).
 
 ## Acceptance Criteria
+- Mission cross-reference is present (`doc/mission.md`).
 - Every entry passes the schema.
 - Every change to the register is reported back to the caller with the new
   id and severity.
 - No item is added without a citation.
+- Items that touch the library catalog or the binding/LLM surface
+  also link to `doc/library-catalog.md` or
+  `doc/binding-architecture.md` respectively.

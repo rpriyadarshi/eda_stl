@@ -1,0 +1,89 @@
+# eda_stl LLM Allowlist
+#
+# This file is the primary safety boundary for mcp_server. Every MCP
+# tool that may be invoked must appear here, scoped per environment.
+# Calls to tools that are not in this file are denied with reason and
+# audit-logged.
+#
+# Authoritative human document: doc/binding-architecture.md (section 7.4).
+# Mission charter:               doc/mission.md.
+# System card:                   binding/schemas/llm/system-card.yaml.
+# Capability registry:           binding/schemas/llm/capability-registry.yaml.
+#
+# This is a SKELETON authored at Phase 0 alongside the system card.
+# Per-environment scoping (dev | staging | prod | public) is finalized
+# in Phase 7 (`p7-allowlist-governance`).
+
+schema_version: 0.1.0
+spec: mcp/allowlist/0.1.0
+
+enforcement: deny_by_default
+
+# Default audit-tag fields (every entry inherits these unless overridden).
+defaults:
+  audit:
+    enabled: true
+    fields:
+      - timestamp
+      - identity
+      - environment
+      - request
+      - decision
+      - outcome
+      - latency_ms
+  rate_limit:
+    requests_per_minute: 60
+
+# Environment scopes.
+environments:
+
+  dev:
+    description: Developer workstations and CI sandboxes.
+    rate_limit:
+      requests_per_minute: 600
+    tools:
+      - id: rack.find_design
+      - id: rack.find_net
+      - id: algo.dfs
+      - id: layout.stream_tile
+      - id: report.generate_summary
+    resources:
+      - id: eda://docs/mission
+      - id: eda://docs/binding-architecture
+      - id: eda://docs/library-catalog
+      - id: eda://glossary
+      - id: eda://schemas/flight
+    prompts:
+      - id: explain_design
+      - id: diagnose_open_net
+      - id: produce_layout_summary
+
+  staging:
+    description: Pre-release verification environment.
+    inherits: dev
+
+  prod:
+    description: Production deployments inside the IP boundary.
+    rate_limit:
+      requests_per_minute: 120
+    tools:
+      - id: rack.find_design
+      - id: rack.find_net
+      - id: report.generate_summary
+    resources:
+      - id: eda://docs/mission
+      - id: eda://docs/binding-architecture
+      - id: eda://glossary
+    prompts:
+      - id: explain_design
+
+  public:
+    description: Public-facing demo deployments. Highly restricted.
+    rate_limit:
+      requests_per_minute: 30
+    tools: []
+    resources:
+      - id: eda://docs/mission
+      - id: eda://docs/binding-architecture
+      - id: eda://glossary
+    prompts: []

@@ -12,10 +12,17 @@ verify execution of the phased plan defined in
 [`doc/implementation/implementation-phases.md`](../../../doc/implementation/implementation-phases.md).
 
 ## Inputs
+- [`doc/mission.md`](../../../doc/mission.md) (the charter; every
+  task's verification serves the mission's required capabilities and
+  reject criteria).
 - [`doc/implementation/implementation-phases.md`](../../../doc/implementation/implementation-phases.md)
 - The state file
   [`doc/implementation/state.yaml`](../../../doc/implementation/state.yaml)
   (created on first run).
+- [`doc/library-catalog.md`](../../../doc/library-catalog.md)
+  (validates library substitutions performed by phase tasks).
+- [`doc/binding-architecture.md`](../../../doc/binding-architecture.md)
+  (validates C-ABI / LLM / service plane tasks).
 - The repository at `/home/rohit/src/eda_stl/`.
 
 ## Outputs
@@ -104,7 +111,10 @@ them to actions on the playbook:
 ```
 
 ## Acceptance Criteria
+- Mission cross-reference is present (`doc/mission.md`).
 - Always loads `state.yaml`.
 - Always emits a phase run report.
 - Never mutates source without verification commands attached.
-- Cross-references the playbook and the technical debt register.
+- Cross-references the playbook, the technical debt register, and
+  (when binding/library/LLM tasks are touched) `library-catalog.md`
+  and `binding-architecture.md`.

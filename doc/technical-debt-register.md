@@ -17,11 +17,14 @@ driving phase execution and the `technical-debt-tracker` skill.
   [`quality-gaps-and-risks.md`](quality-gaps-and-risks.md)).
 
 ## Cross References
+- [`mission.md`](mission.md)
 - [`glossary.md`](glossary.md)
 - [`code-quality-standards.md`](code-quality-standards.md)
 - [`quality-gaps-and-risks.md`](quality-gaps-and-risks.md)
 - [`build-test-ci.md`](build-test-ci.md)
 - [`extensibility-contract.md`](extensibility-contract.md)
+- [`binding-architecture.md`](binding-architecture.md)
+- [`library-catalog.md`](library-catalog.md)
 - [`implementation/implementation-phases.md`](implementation/implementation-phases.md)
 
 ## Severity Scale
@@ -183,6 +186,94 @@ stateDiagram-v2
 - description: No benchmarks, baselines, or regression gates exist.
 - remediation_phase: Phase 5
 - owner: performance owner
+
+### D-19 JsonCpp obsolescence
+- severity: high
+- evidence: [`/home/rohit/src/eda_stl/CMakeLists.txt`](../CMakeLists.txt),
+  [`/home/rohit/src/eda_stl/rack/swig/rack_int.i`](../rack/swig/rack_int.i)
+- description: JsonCpp is slow, non-SIMD, non-Arrow-friendly, and not
+  in the canonical [`library-catalog.md`](library-catalog.md). Replace
+  with simdjson (ingest) and glaze (typed serde) in Phase 0
+  (`p0-jsoncpp-to-simdjson-glaze`).
+- remediation_phase: Phase 0
+- owner: build maintainer
+
+### D-20 SWIG fragility
+- severity: high
+- evidence: [`/home/rohit/src/eda_stl/rack/swig/rack_int.i`](../rack/swig/rack_int.i)
+- description: 18 commented-out `%include`s (lines 129-148), several
+  `%warnfilter`/`%ignore` directives (lines 64-73), and parity gaps in
+  [`/home/rohit/src/eda_stl/rack/swig/test.py`](../rack/swig/test.py)
+  vs the C++ test
+  ([`/home/rohit/src/eda_stl/rack/test/test.cpp`](../rack/test/test.cpp)).
+  Replaced for Python by nanobind in Phase 4; SWIG decommission in
+  Phase 7 (`p7-swig-decommission`).
+- remediation_phase: Phase 4 / 7
+- owner: bindings maintainer
+
+### D-21 No C-stable ABI / SSOT
+- severity: critical
+- evidence: repository-wide; no `binding/cabi/` directory
+- description: There is no C-stable ABI, no Flight or Arrow schema, no
+  tile schema, and no LLM system card. Without the SSOT, every wrapper
+  must redefine the model. Lands in Phase 3 (`p3-cabi-define`,
+  `p3-cabi-lint`, `p3-binding-export-targets`,
+  `p3-schema-skeletons`, `p3-system-card-generator`).
+- remediation_phase: Phase 3
+- owner: API governance owner
+
+### D-22 No mmap path for chip-class data
+- severity: medium
+- evidence: repository-wide
+- description: Hand-rolled `<fstream>` will not scale to chip-class
+  layouts. Adopt mio mmap in Phase 6 (`p6-mio-mmap`).
+- remediation_phase: Phase 6
+- owner: performance owner
+
+### D-23 Hot-path `std::unordered_map` usage
+- severity: medium
+- evidence: hot lookups in `rack/`, `utl/`
+- description: Replace with `absl::flat_hash_map` on identified hot
+  paths in Phase 6 (`p6-abseil-flat-hash`).
+- remediation_phase: Phase 6
+- owner: performance owner
+
+### D-24 Ad-hoc logging and stringification
+- severity: medium
+- evidence: repository-wide use of `std::cout` / `std::cerr` and raw
+  `printf`-style formatting
+- description: Adopt spdlog and fmt in Phase 1
+  (`p1-adopt-spdlog-fmt-cli11`); promote `fmt` to `std::format` in
+  Phase 2 (`p2-promote-fmt-to-stdformat`).
+- remediation_phase: Phase 1 / 2
+- owner: code quality owner
+
+### D-25 Mutex-only concurrency
+- severity: medium
+- evidence: ad-hoc `std::mutex` use without a parallel runtime
+- description: Adopt `std::jthread` + oneTBB in Phase 5
+  (`p5-onetbb-jthread`).
+- remediation_phase: Phase 5
+- owner: performance owner
+
+### D-26 Default allocator on hot containers
+- severity: medium
+- evidence: rack/, utl/ container declarations using `std::allocator`
+- description: Adopt mimalloc system-wide and arena allocators per
+  category in Phase 6 (`p6-allocator-categories`).
+- remediation_phase: Phase 6
+- owner: performance owner
+
+### D-27 Missing service plane and LLM/web deliverables
+- severity: high
+- evidence: repository-wide; no `binding/server/`, `binding/llm/`,
+  `binding/web/`
+- description: Phase 4 lands `mcp_server`; Phase 5 lands
+  `eda_server` (Arrow Flight + Plasma); Phase 6 lands the tile
+  protocol and gateway; Phase 7 references the downstream WebGPU
+  client.
+- remediation_phase: Phase 4 / 5 / 6 / 7
+- owner: bindings maintainer
 
 ## Acceptance Criteria For This Document
 - Severity scale defined.

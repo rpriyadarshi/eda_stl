@@ -20,10 +20,13 @@ maintaining content for this repository.
 - AI/Quartus terminology (the `ai` tree is no longer in this repository).
 
 ## Cross References
+- [`mission.md`](mission.md)
 - [`README.md`](README.md)
 - [`repository-map.md`](repository-map.md)
 - [`rack-model-and-verification.md`](rack-model-and-verification.md)
 - [`code-quality-standards.md`](code-quality-standards.md)
+- [`binding-architecture.md`](binding-architecture.md)
+- [`library-catalog.md`](library-catalog.md)
 
 ## How To Read An Entry
 Every entry includes:
@@ -307,6 +310,318 @@ flowchart LR
 - evidence: [`extensibility-contract.md`](extensibility-contract.md)
 - aliases: none
 - related_terms: `API Tier`
+
+## Mission Terms
+
+### STL For EDA
+- term: `STL for EDA`
+- definition: The mission statement of `eda_stl`: be to Electronic
+  Design Automation what the C++ Standard Template Library is to
+  software in general - a free, public, best-in-class data-modeling
+  foundation.
+- evidence: [`mission.md`](mission.md)
+- aliases: mission, charter
+- related_terms: `Data-Modeling Burden`, `Public Utility`,
+  `Mission Boundary`
+
+### Data-Modeling Burden
+- term: `data-modeling burden`
+- definition: The duplicated industry-wide work of rebuilding
+  hierarchical, name-resolved, view-managed, geometry-indexed netlist
+  data models. `eda_stl` exists to eliminate this burden.
+- evidence: [`mission.md`](mission.md)
+- aliases: data-model duplication
+- related_terms: `STL For EDA`, `Mission Boundary`
+
+### Public Utility
+- term: `public utility`
+- definition: The licensing and governance posture of `eda_stl`:
+  MIT-licensed, no private-fork advantage, no paid runtime, no vendor
+  lock-in, infrastructure-grade availability.
+- evidence: [`mission.md`](mission.md),
+  [`/home/rohit/src/eda_stl/LICENSE`](../LICENSE)
+- aliases: public infrastructure
+- related_terms: `STL For EDA`, `Mission-Aligned Reject Criterion`
+
+### Mission Boundary
+- term: `mission boundary`
+- definition: The boundary that excludes tools, flows, viewers, and
+  vendor products from this repository. `eda_stl` is infrastructure;
+  what is built on top is downstream.
+- evidence: [`mission.md`](mission.md)
+- aliases: non-mission boundary
+- related_terms: `STL For EDA`, `Mission-Aligned Reject Criterion`
+
+### Mission-Aligned Reject Criterion
+- term: `mission-aligned reject criterion`
+- definition: A reject rule applied to any proposed change that would
+  erode the mission - private-fork advantages, GPL-only deps,
+  vendor-format coupling, paid-runtime gating, redefining the model in a
+  frontend, or crossing the mission boundary.
+- evidence: [`mission.md`](mission.md)
+- aliases: mission reject rule
+- related_terms: `Reject Criterion`, `Mission Boundary`
+
+## Binding And Interfacing Terms
+
+### SSOT
+- term: `SSOT`
+- definition: Single Source Of Truth for all interfacing in `eda_stl`:
+  the C-stable ABI headers under `binding/cabi/`, the schemas under
+  `binding/schemas/`, and the LLM system card under
+  `binding/schemas/llm/`. Every wrapper consumes this surface; nothing
+  else may redefine it.
+- evidence: [`binding-architecture.md`](binding-architecture.md)
+- aliases: single source of truth
+- related_terms: `C-ABI`, `System Card`, `Capability Registry`
+
+### C-ABI
+- term: `C-ABI`
+- definition: The C-stable Application Binary Interface exposed by
+  `eda_stl` through opaque handles, an explicit error model, and stable
+  layout - the foundation of the SSOT.
+- evidence: [`binding-architecture.md`](binding-architecture.md)
+- aliases: C-stable ABI
+- related_terms: `SSOT`, `Opaque Handle`, `Error Model`
+
+### Opaque Handle
+- term: `opaque handle`
+- definition: A pointer/integer typedef whose layout is intentionally
+  hidden; consumers may pass it across the C-ABI but never dereference
+  it.
+- evidence: [`binding-architecture.md`](binding-architecture.md)
+- aliases: handle
+- related_terms: `C-ABI`, `Lifetime`
+
+### Error Model
+- term: `error model`
+- definition: The C-ABI convention for surfacing errors: an integer
+  status code plus an optional `eda_error*` accessor returning the
+  message and category.
+- evidence: [`binding-architecture.md`](binding-architecture.md)
+- aliases: status code model
+- related_terms: `C-ABI`
+
+### nanobind
+- term: `nanobind`
+- definition: The selected best-in-class C++ to Python binding generator
+  for `eda_stl`. Replaces SWIG for the Python frontend.
+- evidence: [`binding-architecture.md`](binding-architecture.md),
+  [`library-catalog.md`](library-catalog.md)
+- aliases: none
+- related_terms: `pyrack`, `SWIG Module`
+
+### cpptcl
+- term: `cpptcl`
+- definition: The selected best-in-class C++ to Tcl binding library
+  (FlightAware) for `eda_stl`.
+- evidence: [`binding-architecture.md`](binding-architecture.md),
+  [`library-catalog.md`](library-catalog.md)
+- aliases: none
+- related_terms: `Tcl Frontend`
+
+### Arrow Flight
+- term: `Arrow Flight`
+- definition: The Apache Arrow gRPC-based RPC layer used by `eda_server`
+  to deliver high-throughput record-batched query results to clients.
+- evidence: [`binding-architecture.md`](binding-architecture.md),
+  [`library-catalog.md`](library-catalog.md)
+- aliases: Flight
+- related_terms: `eda_server`, `Plasma`
+
+### Plasma
+- term: `Plasma`
+- definition: The Apache Arrow shared-memory in-process IPC layer used
+  for zero-copy hand-off between `eda_server` and co-located clients.
+- evidence: [`binding-architecture.md`](binding-architecture.md)
+- aliases: shared-memory data plane
+- related_terms: `Arrow Flight`, `eda_server`
+
+### Tile Protocol
+- term: `tile protocol`
+- definition: The vector-tile streaming schema and frame format used to
+  deliver chip-scale layouts to web viewers via WebSocket Arrow IPC.
+  `eda_stl` ships the protocol; viewers are downstream.
+- evidence: [`binding-architecture.md`](binding-architecture.md)
+- aliases: vector tile protocol
+- related_terms: `WebGPU Client`, `Mission Boundary`
+
+### WebGPU Client
+- term: `WebGPU client`
+- definition: A downstream sibling project that consumes the tile
+  protocol and renders chip-scale layouts at 60 FPS in a browser.
+- evidence: [`binding-architecture.md`](binding-architecture.md)
+- aliases: web viewer
+- related_terms: `Tile Protocol`, `Mission Boundary`
+
+### eda_server
+- term: `eda_server`
+- definition: The Apache Arrow Flight service binary that serves
+  `eda_stl` query and tile traffic to off-process clients.
+- evidence: [`binding-architecture.md`](binding-architecture.md)
+- aliases: Flight service
+- related_terms: `Arrow Flight`, `Plasma`
+
+## LLM Interface Terms
+
+### MCP
+- term: `MCP`
+- definition: Model Context Protocol - a vendor-neutral JSON-RPC-based
+  protocol for LLM tool-use. `eda_stl` exposes its capabilities through
+  a native C++ `mcp_server`.
+- evidence: [`binding-architecture.md`](binding-architecture.md)
+- aliases: Model Context Protocol
+- related_terms: `mcp_server`, `System Card`
+
+### mcp_server
+- term: `mcp_server`
+- definition: The native C++ binary that implements the MCP protocol
+  for `eda_stl`, consumes the SSOT, and presents tools, resources, and
+  prompts to LLM clients.
+- evidence: [`binding-architecture.md`](binding-architecture.md)
+- aliases: MCP server
+- related_terms: `MCP`, `System Card`, `Allowlist`
+
+### System Card
+- term: `system card`
+- definition: A machine-readable YAML at
+  `binding/schemas/llm/system-card.yaml` declaring `eda_stl`'s identity,
+  capability index, allowlist, IP boundary, telemetry policy, and
+  mission tag. Returned by `mcp_server` on `initialize`.
+- evidence: [`binding-architecture.md`](binding-architecture.md),
+  [`/home/rohit/src/eda_stl/binding/schemas/llm/system-card.yaml`](../binding/schemas/llm/system-card.yaml)
+- aliases: identity card
+- related_terms: `MCP`, `Capability Registry`, `Allowlist`,
+  `IP Boundary`
+
+### Capability Registry
+- term: `capability registry`
+- definition: A YAML index, generated from the SSOT plus annotations,
+  that enumerates every MCP tool, resource, and prompt offered by
+  `mcp_server`.
+- evidence: [`binding-architecture.md`](binding-architecture.md)
+- aliases: registry
+- related_terms: `System Card`, `MCP`
+
+### Allowlist
+- term: `allowlist`
+- definition: The primary safety boundary for `mcp_server`: a YAML at
+  `binding/schemas/llm/allowlist.yaml` enumerating the MCP tools that
+  may be invoked, possibly per-environment.
+- evidence: [`binding-architecture.md`](binding-architecture.md)
+- aliases: allowlist policy
+- related_terms: `MCP`, `mcp_server`, `IP Boundary`
+
+### IP Boundary
+- term: `IP boundary`
+- definition: The set of network and storage destinations declared in
+  the system card to which `mcp_server` may emit design data. Anything
+  outside is exfiltration and is rejected.
+- evidence: [`binding-architecture.md`](binding-architecture.md)
+- aliases: data boundary
+- related_terms: `System Card`, `Allowlist`
+
+### AGENTS.md
+- term: `AGENTS.md`
+- definition: The repository-root, human-and-LLM-readable static
+  discovery file. Opens with the mission paragraph from
+  [`mission.md`](mission.md) and points to the system card and
+  `mcp_server`.
+- evidence: [`/home/rohit/src/eda_stl/AGENTS.md`](../AGENTS.md)
+- aliases: agents file
+- related_terms: `System Card`, `MCP`
+
+### Prompt Injection
+- term: `prompt injection`
+- definition: An attack class where untrusted input embedded in design
+  data attempts to manipulate the LLM controlling `mcp_server`.
+  Mitigated by content-type tagging, provenance metadata, and resource
+  isolation.
+- evidence: [`binding-architecture.md`](binding-architecture.md)
+- aliases: indirect prompt injection
+- related_terms: `mcp_server`, `Allowlist`, `IP Boundary`
+
+## Library Catalog Terms
+
+### Library Catalog
+- term: `library catalog`
+- definition: The canonical inventory of best-in-class third-party
+  libraries used by `eda_stl`, with rationale, version pin, license,
+  replacement path, and phase mapping. Library implementations are
+  never part of the public surface.
+- evidence: [`library-catalog.md`](library-catalog.md)
+- aliases: third-party catalog
+- related_terms: `library-selection skill`, `SSOT`
+
+### simdjson
+- term: `simdjson`
+- definition: The SIMD-accelerated JSON ingest library replacing
+  JsonCpp on the read path.
+- evidence: [`library-catalog.md`](library-catalog.md)
+- aliases: none
+- related_terms: `glaze`, `JsonCpp Replacement`
+
+### glaze
+- term: `glaze`
+- definition: The header-only typed JSON serialization library
+  replacing JsonCpp on the typed read/write path.
+- evidence: [`library-catalog.md`](library-catalog.md)
+- aliases: none
+- related_terms: `simdjson`, `JsonCpp Replacement`
+
+### oneTBB
+- term: `oneTBB`
+- definition: Intel oneAPI Threading Building Blocks. The selected
+  parallel runtime for work-stealing schedulers and parallel STL.
+- evidence: [`library-catalog.md`](library-catalog.md)
+- aliases: TBB
+- related_terms: `mimalloc`, `Bounded Memory`
+
+### mimalloc
+- term: `mimalloc`
+- definition: The selected system-wide allocator for `eda_stl`,
+  combined with arena allocators for transient/persistent/interned
+  classes.
+- evidence: [`library-catalog.md`](library-catalog.md)
+- aliases: none
+- related_terms: `oneTBB`, `Allocator Categories`
+
+### Allocator Categories
+- term: `allocator categories`
+- definition: The three operational categories of allocator used by
+  `eda_stl`: `transient` (per-unit arenas), `persistent` (lock-free
+  pools), `interned` (deduplicated symbol/string store).
+- evidence: [`performance/cpp23-and-parallel-runtime.md`](performance/cpp23-and-parallel-runtime.md)
+- aliases: allocator classes
+- related_terms: `mimalloc`, `Bounded Memory`
+
+### vcpkg
+- term: `vcpkg`
+- definition: Microsoft's C++ package manager (manifest mode) - the
+  default dependency acquisition mechanism for `eda_stl` from Phase 0
+  onward.
+- evidence: [`library-catalog.md`](library-catalog.md),
+  [`build-test-ci.md`](build-test-ci.md)
+- aliases: none
+- related_terms: `CPM.cmake`, `FetchContent`
+
+### CPM.cmake
+- term: `CPM.cmake`
+- definition: The fallback CMake-based dependency acquisition mechanism
+  used when a dependency is unavailable through vcpkg.
+- evidence: [`library-catalog.md`](library-catalog.md)
+- aliases: none
+- related_terms: `vcpkg`, `FetchContent`
+
+### JsonCpp Replacement
+- term: `JsonCpp replacement`
+- definition: The Phase 0 task that removes JsonCpp from the build
+  graph and the `rack/swig/rack_int.i` interface, replacing it with
+  simdjson + glaze.
+- evidence: [`library-catalog.md`](library-catalog.md),
+  [`technical-debt-register.md`](technical-debt-register.md)
+- aliases: D-19
+- related_terms: `simdjson`, `glaze`
 
 ## Acceptance Criteria For This Document
 - Every term has the entry schema (term, definition, evidence, aliases,

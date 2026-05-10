@@ -24,10 +24,13 @@ All contributors and AI tools generating or modifying code in this repository.
   [`extensibility-contract.md`](extensibility-contract.md)).
 
 ## Cross References
+- [`mission.md`](mission.md)
 - [`glossary.md`](glossary.md)
 - [`build-test-ci.md`](build-test-ci.md)
 - [`technical-debt-register.md`](technical-debt-register.md)
 - [`extensibility-contract.md`](extensibility-contract.md)
+- [`binding-architecture.md`](binding-architecture.md)
+- [`library-catalog.md`](library-catalog.md)
 - [`performance/cpp23-and-parallel-runtime.md`](performance/cpp23-and-parallel-runtime.md)
 - [`implementation/implementation-phases.md`](implementation/implementation-phases.md)
 
@@ -130,10 +133,84 @@ flowchart LR
 - Tests must be deterministic and independent of order.
 - Slow tests are tagged and run on a separate CI lane.
 
+## Library Catalog Mandate
+
+Use the canonical [`library-catalog.md`](library-catalog.md). New
+third-party dependencies are forbidden unless they appear in the
+catalog or have been added through the `library-selection` skill at
+[`../.cursor/skills/library-selection/SKILL.md`](../.cursor/skills/library-selection/SKILL.md).
+
+Required behavior:
+
+- For every concern, use the catalog's chosen library. JSON ingest is
+  simdjson; typed JSON serde is glaze; logging is spdlog; formatting
+  is fmt then `std::format`; CLI parsing is CLI11; parallel runtime is
+  oneTBB; allocator is mimalloc; hash maps are `absl::flat_hash_map`
+  on hot paths; mmap is mio; compression is zstd or lz4; profiler is
+  Tracy; metrics are prometheus-cpp; tracing is OpenTelemetry C++.
+- Library types from `binding-impl` (per
+  [`extensibility-contract.md`](extensibility-contract.md) §"Binding
+  Tiers") **must never** appear in `binding-ssot` headers, schemas,
+  or in any `public-stable` / `public-evolving` C++ header.
+- Adding or substituting a dependency requires updating
+  [`library-catalog.md`](library-catalog.md), satisfying the
+  substitution policy there, and a `library-selection` skill review.
+
+## Binding-Side Code Quality Rules
+
+Every change that touches `binding/` (the SSOT and wrappers per
+[`binding-architecture.md`](binding-architecture.md)) must additionally:
+
+- Pass the `p3-cabi-lint` rules (no template signatures crossing the
+  C-ABI; no `binding-impl` types crossing the C-ABI; consistent
+  `extern "C"` and opaque-handle conventions).
+- Carry stability annotations matching the binding tier the change
+  affects (`binding-ssot`, `binding-wrapper`, or `binding-impl`).
+- Document the lifetime of every handle returned to or consumed from
+  a wrapper.
+- Translate every internal exception into the C-ABI error model;
+  exceptions never escape across `extern "C"`.
+- Keep the binding hot path zero-copy: any new copy on the hot path
+  must be justified against the `binding.zero_copy_violations` KPI in
+  [`performance/cpp23-and-parallel-runtime.md`](performance/cpp23-and-parallel-runtime.md).
+
+## LLM Surface Safety Rules
+
+Every change that touches `binding/llm/` or `binding/schemas/llm/`
+must:
+
+- Update or regenerate the capability registry through the same
+  generator path; no hand edits that drift from the SSOT.
+- Add an explicit allowlist entry for any new tool, with environment
+  scope and audit-tag fields populated.
+- Tag every LLM-facing output with `content_type` and a `provenance`
+  block (source schema version, generation time, signing hash if
+  applicable).
+- Validate every request and response against the registry's JSON
+  Schema using valijson.
+- Honor the IP boundary declared in the system card; outputs to
+  destinations outside the boundary are rejected at the response
+  edge.
+- Apply the prompt-injection mitigations in
+  [`binding-architecture.md`](binding-architecture.md) §7 (fence
+  untrusted text, mark `source_class` on resources, do not embed
+  user-supplied content in tool descriptions).
+
+## Mission Cross-Reference
+
+Every code-quality decision must satisfy the mission-aligned reject
+criteria in [`mission.md`](mission.md) §"Mission-Aligned Reject
+Criteria". A change that meets the technical bar but erodes the
+public-utility premise is still rejected.
+
 ## Acceptance Criteria For This Document
 - Mandatory idioms enumerated.
 - Naming, header, and ownership rules explicit.
 - Tooling baseline declared.
 - Forbidden patterns listed.
+- Library catalog mandate stated.
+- Binding-side code quality rules stated.
+- LLM surface safety rules stated.
+- Mission cross-reference present.
 - Cross-references present.
 - At least one mermaid diagram present.

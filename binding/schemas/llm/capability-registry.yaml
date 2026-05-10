@@ -1,0 +1,101 @@
+# eda_stl LLM Capability Registry
+#
+# This file is the machine-readable index of every MCP tool, resource,
+# and prompt offered by the native C++ mcp_server. It is GENERATED in
+# Phase 3 / Phase 4 by `scripts/llm_card_gen.py` (or equivalent) from
+# the C-ABI plus schemas plus annotations.
+#
+# Authoritative human document: doc/binding-architecture.md (section 7).
+# Mission charter:               doc/mission.md.
+# System card:                   binding/schemas/llm/system-card.yaml.
+#
+# This is a SKELETON authored alongside the system card. The
+# generator pipeline (`p3-system-card-generator`) and the drift gate
+# (`p4-llm-card-lint`) replace and validate this content as those
+# phases land.
+
+schema_version: 0.1.0
+spec: mcp/capability-registry/0.1.0
+
+generated: false
+generated_from:
+  - binding/cabi/include/eda_c_*.h
+  - binding/schemas/flight/*.proto
+  - binding/schemas/arrow/*.fbs
+  - binding/schemas/tile/*.fbs
+  - binding/schemas/llm/annotations.yaml
+
+resources:
+  - id: eda://docs/mission
+    title: Mission Charter
+    purpose: Read the mission charter ("STL for EDA").
+    source: doc/mission.md
+    source_class: canonical
+    content_type: text/markdown
+  - id: eda://docs/binding-architecture
+    title: Binding Architecture
+    purpose: Read the SSOT and best-in-class wrapper design.
+    source: doc/binding-architecture.md
+    source_class: canonical
+    content_type: text/markdown
+  - id: eda://docs/library-catalog
+    title: Library Catalog
+    purpose: Read the canonical best-in-class library inventory.
+    source: doc/library-catalog.md
+    source_class: canonical
+    content_type: text/markdown
+  - id: eda://glossary
+    title: Glossary
+    purpose: Read the canonical terminology.
+    source: doc/glossary.md
+    source_class: canonical
+    content_type: text/markdown
+  - id: eda://schemas/flight
+    title: Arrow Flight Schemas
+    purpose: Read the Flight RPC schema bundle.
+    source: binding/schemas/flight/
+    source_class: canonical
+    content_type: application/yaml
+
+tools:
+  - id: rack.find_design
+    title: Find Design
+    purpose: Find a design by name.
+    cabi_function: eda_rack_find_design
+    side_effects: none
+    cost_class: o1
+  - id: rack.find_net
+    title: Find Net
+    purpose: Find a net by hierarchical name.
+    cabi_function: eda_rack_find_net
+    side_effects: none
+    cost_class: o1
+  - id: algo.dfs
+    title: Depth-First Search
+    purpose: Run a depth-first traversal over a netlist.
+    cabi_function: eda_algo_dfs
+    side_effects: none
+    cost_class: olog_n
+  - id: layout.stream_tile
+    title: Stream Layout Tile
+    purpose: Stream a layout tile at a requested LOD.
+    cabi_function: eda_layout_stream_tile
+    side_effects: bandwidth
+    cost_class: streaming
+  - id: report.generate_summary
+    title: Generate Summary
+    purpose: Generate a textual summary of a design.
+    cabi_function: eda_report_generate_summary
+    side_effects: cpu
+    cost_class: olog_n
+
+prompts:
+  - id: explain_design
+    title: Explain Design
+    purpose: Explain a design in plain language.
+  - id: diagnose_open_net
+    title: Diagnose Open Net
+    purpose: Diagnose a suspected open net.
+  - id: produce_layout_summary
+    title: Produce Layout Summary
+    purpose: Produce a layout summary report.
